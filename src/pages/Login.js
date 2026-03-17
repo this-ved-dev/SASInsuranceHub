@@ -1,12 +1,11 @@
 import React from 'react'
 import { useContext, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import Instance from '../apis/Instance.js'
+import { useHistory } from 'react-router-dom'
+import apiClient from '../apis/apiClient'
 import { AuthContext } from '../context/AuthContext'
 
 import ImageLight from '../assets/img/bfsi.jpg'
 import ImageDark from '../assets/img/login-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
 import { Label, Input, Button, HelperText } from '@windmill/react-ui'
 
 function Login() {
@@ -34,22 +33,17 @@ function Login() {
       'Content-Type': 'application/x-www-form-urlencoded'
     };
 
-    Instance.post(endpoint, new URLSearchParams(data), { headers: headers })
+    apiClient.post(endpoint, new URLSearchParams(data), { headers: headers })
       .then(response => {
-        console.log(response);
         if (response.status === 200) {
-          console.log("yes");
           Instance.defaults.headers.common['Authorization'] = `${response.data.token_type} ${response.data.access_token}`;
           setAuthInfo({ ...authInfo, authenticated: true, user: user, tokenInfo: response.data });
           navigate.push("/app/dashboard");
-          // setAlert(`User Authenticated!`);
           return null;
         }
-      }).catch(error => {
-        console.log(error);
-
-        Instance.defaults.headers.common['Authorization'] = null;
-        setAlert(`User ${user} could not be authenticated, please check user name and password!`);
+      }).catch(() => {
+        apiClient.defaults.headers.common['Authorization'] = null;
+        setAlert(`User ${user} could not be authenticated. Please check username and password.`);
       });
   }
   return (
@@ -83,7 +77,7 @@ function Login() {
                   <span>Password</span>
                   <Input className="mt-1" type="password" ref={passwordInput} placeholder="***************" />
                 </Label>
-                {/* block tag={Link} to="/app" */}
+                {alert && <HelperText valid={false} className="mt-2">{alert}</HelperText>}
                 <Button type="submit" className="mt-4" >
                   Log in
                 </Button>
