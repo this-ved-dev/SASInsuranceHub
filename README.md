@@ -230,8 +230,3 @@ Reports are embedded using `<sas-report-page>` and `<sas-report-object>` web com
 | `npm run tailwind:dev` | Build Tailwind CSS for development |
 | `npm run tailwind:build` | Build Tailwind CSS for production |
 
----
-
-## License
-
-Private project. All rights reserved.
